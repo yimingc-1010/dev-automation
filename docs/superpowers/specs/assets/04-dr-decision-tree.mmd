@@ -1,0 +1,20 @@
+flowchart TD
+    A[平台失靈?] --> B{是哪一類?}
+    B -->|中央 repo 壞了| C[情境 1]
+    B -->|Secret 過期或外洩| D[情境 2]
+    B -->|Bot 沒回應| E[情境 3]
+    B -->|Org Secret 突然不能用| F[情境 4]
+
+    C --> C1{中央 repo 還在?}
+    C1 -->|是,改 private| C2[短期:薄貼紙獨立運作]
+    C1 -->|否,被砍| C3[中期:fork 重建並發 tag]
+
+    D --> D1{哪個 secret?}
+    D1 -->|TELEGRAM_BOT_TOKEN| D2[BotFather revoke + 替換]
+    D1 -->|CLAUDE_CODE_OAUTH_TOKEN| D3[Console regenerate + 替換]
+
+    E --> E1{Phase?}
+    E1 -->|Phase 1| E2[降級:看 GitHub 通知]
+    E1 -->|Phase 3+| E3[重啟 bot 服務]
+
+    F --> F1[薄貼紙 fallback 自動生效]
