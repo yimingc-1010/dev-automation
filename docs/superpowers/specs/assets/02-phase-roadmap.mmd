@@ -1,0 +1,40 @@
+flowchart TB
+    subgraph Org["GitHub Organization 共用設定 (設一次,全 repo 通用)"]
+        direction LR
+        ORG_S1["🔒 Org Secret<br/>CLAUDE_CODE_OAUTH_TOKEN"]
+        ORG_S2["🔒 Org Secret<br/>TELEGRAM_BOT_TOKEN"]
+        ORG_ST["📋 Starter Workflows<br/>(.github repo)"]
+    end
+
+    subgraph Central["Layer 1: 平台引擎 (中央 repo)<br/>yimingc-1010/dev-automation"]
+        direction TB
+        C1["claude.reusable.yml<br/>@claude 接單員邏輯"]
+        C2["notify.reusable.yml<br/>Telegram 傳令兵邏輯"]
+        C3["Releases: @v1, @v2 ..."]
+        C1 --- C2
+        C2 --- C3
+    end
+
+    subgraph Products["Layer 2: 各產品 repo (設定貼紙)"]
+        direction TB
+        P1["home-splat / repo-B / repo-C ..."]
+        P2[".github/workflows/claude.yml<br/>(~12 行薄貼紙)"]
+        P3[".github/workflows/notify.yml<br/>(~12 行薄貼紙)"]
+        P4[".github/workflows/ci.yml<br/>(各 repo 自管)"]
+        P5["📦 Repo Variable<br/>TELEGRAM_CHAT_ID"]
+        P1 --> P2
+        P1 --> P3
+        P1 --> P4
+        P1 --> P5
+    end
+
+    Products -->|"uses: @v1<br/>(Reusable Workflow)"| Central
+    Products -.->|"繼承"| Org
+    Central -.->|"需要 secret"| Org
+
+    classDef secret fill:#fce4ec,stroke:#c2185b,color:#000
+    classDef central fill:#e8f5e9,stroke:#2e7d32,color:#000
+    classDef product fill:#e3f2fd,stroke:#1565c0,color:#000
+    class ORG_S1,ORG_S2 secret
+    class C1,C2,C3 central
+    class P1,P2,P3,P4,P5 product

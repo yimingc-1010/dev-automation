@@ -1,0 +1,30 @@
+flowchart TB
+    subgraph StatePlane["狀態平面 (State Plane) — 看"]
+        direction TB
+        GH["GitHub<br/>Issues / Projects / PRs / Actions"]
+        SP_USE["用途: 看板、PR 審查、CI 結果<br/>commit history、發 issue"]
+        SP_PROP["特性: 結構化、永久、可搜尋、團隊可見"]
+        SP_LIMIT["限制: 不能即時介入 agent<br/>不能熱改 prompt、不能 kill run"]
+        GH --- SP_USE
+        SP_USE --- SP_PROP
+        SP_PROP --- SP_LIMIT
+    end
+
+    subgraph ControlPlane["控制平面 (Control Plane) — 做"]
+        direction TB
+        TG["Telegram Bot (常駐服務)<br/>+ Claude workflow (事件驅動)"]
+        CP_USE["用途:<br/>推: Claude 完成階段 → Telegram 通知<br/>拉: /status /pause /replan /priority"]
+        CP_PROP["特性: 即時、雙向、可在行動中操作"]
+        CP_LIMIT["限制: 不持久、需自建 bot 服務<br/>workflow 只能推不能拉"]
+        TG --- CP_USE
+        CP_USE --- CP_PROP
+        CP_PROP --- CP_LIMIT
+    end
+
+    StatePlane <-.結構化資料.-> ControlPlane
+    ControlPlane <-.即時指令.-> StatePlane
+
+    classDef state fill:#e1f5ff,stroke:#0277bd,color:#000
+    classDef control fill:#fff3e0,stroke:#e65100,color:#000
+    class GH,SP_USE,SP_PROP,SP_LIMIT state
+    class TG,CP_USE,CP_PROP,CP_LIMIT control

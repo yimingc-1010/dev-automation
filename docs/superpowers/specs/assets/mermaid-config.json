@@ -1,0 +1,9 @@
+{
+  "theme": "dark",
+  "themeVariables": {
+    "fontFamily": "Heiti TC, PingFang TC, sans-serif",
+    "fontSize": "16px"
+  },
+  "flowchart": { "htmlLabels": true, "useMaxWidth": true },
+  "sequence": { "useMaxWidth": true, "diagramMarginX": 20 }
+}

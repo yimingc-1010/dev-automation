@@ -1,0 +1,40 @@
+sequenceDiagram
+    autonumber
+    actor User as 開發者
+    participant TG as Telegram
+    participant GH as GitHub Issue/PR
+    participant ST as 薄貼紙 (claude.yml)
+    participant CR as claude.reusable.yml
+    participant CL as Claude Agent
+    participant NR as notify.reusable.yml
+    participant CI as 該 repo 的 CI
+
+    User->>GH: 開 issue 留言 "@claude 幫我做 X"
+    GH->>ST: 觸發 issue_comment event
+    ST->>CR: workflow_call (傳 trigger_event=issue_comment)
+    CR->>CL: claude-code-action 啟動
+    CL->>CL: 讀 issue / 規劃 / 寫 code / 開 PR
+    CL->>GH: push branch + 開 PR
+    CL-->>NR: workflow_run / pull_request 觸發 notify
+    NR->>TG: 推「PR #42 已開啟,等 review」
+
+    User->>GH: 留言 "/replan 改用 Y 方案"
+    GH->>ST: 觸發 issue_comment
+    ST->>CR: workflow_call
+    CR->>CL: 讀新指令
+    CL->>CL: 調整實作、push 同一 branch
+    CL-->>NR: notify
+    NR->>TG: 推「PR #42 已更新」
+
+    GH->>CI: PR 上的 CI 觸發
+    CI-->>NR: workflow_run completed (PR 分支不觸發,需 merge 後)
+    Note over CI,NR: ⚠️ PR 分支上的 CI 結果<br/>不會觸發 notify<br/>(技術限制表第 2 條)
+
+    User->>GH: 人手 merge PR
+    GH->>CI: CI 在 default branch 重跑
+    CI-->>NR: workflow_run completed ✅
+    NR->>TG: 推「PR #42 merged,CI 通過」
+
+    User->>TG: /pause 暫停 PR #43 的 agent
+    TG->>User: 確認 / 寫入 GitHub label
+    Note over TG: 走 Bot 常駐服務<br/>(workflow 只能推不能拉)

@@ -64,6 +64,8 @@ flowchart TB
     class TG,CP_USE,CP_PROP,CP_LIMIT control
 ```
 
+*預覽圖: [SVG](./assets/01-control-data-plane.svg) · [PNG](./assets/01-control-data-plane.png)*
+
 **實際分工:**
 
 | 動作 | 平面 | 觸發者 |
@@ -127,6 +129,8 @@ flowchart TB
     class C1,C2,C3 central
     class P1,P2,P3,P4,P5 product
 ```
+
+*預覽圖: [SVG](./assets/02-phase-roadmap.svg) · [PNG](./assets/02-phase-roadmap.png)*
 
 ## 元件設計
 
@@ -348,6 +352,8 @@ sequenceDiagram
     TG->>User: 確認 / 寫入 GitHub label
     Note over TG: 走 Bot 常駐服務<br/>(workflow 只能推不能拉)
 ```
+
+*預覽圖: [SVG](./assets/03-state-machine.svg) · [PNG](./assets/03-state-machine.png)*
 
 ## 技術限制與取捨摘要
 
